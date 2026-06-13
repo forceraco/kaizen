@@ -4,11 +4,15 @@ interface GlassCardProps {
   children: React.ReactNode;
   className?: string;
   strong?: boolean;
+  onClick?: () => void;
 }
 
-export const GlassCard: React.FC<GlassCardProps> = ({ children, className = '', strong = false }) => {
+export const GlassCard: React.FC<GlassCardProps> = ({ children, className = '', strong = false, onClick }) => {
   return (
-    <div className={`rounded-lg ${strong ? 'glass-strong' : 'glass'} ${className}`}>
+    <div
+      className={`rounded-lg ${strong ? 'glass-strong' : 'glass'} ${className}`}
+      onClick={onClick}
+    >
       {children}
     </div>
   );

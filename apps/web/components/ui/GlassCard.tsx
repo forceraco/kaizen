@@ -10,7 +10,7 @@ interface GlassCardProps {
 export const GlassCard: React.FC<GlassCardProps> = ({ children, className = '', strong = false, onClick }) => {
   return (
     <div
-      className={`rounded-lg ${strong ? 'glass-strong' : 'glass'} ${className}`}
+      className={`rounded-lg transition-all duration-200 ${strong ? 'glass-strong' : 'glass'} ${onClick ? 'cursor-pointer active:scale-[0.98]' : ''} ${className}`}
       onClick={onClick}
     >
       {children}

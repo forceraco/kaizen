@@ -8,10 +8,9 @@ import { useStore } from '@/store/useStore';
 import { RadarChart } from '@/components/ui/RadarChart';
 
 export default function ProfilePage() {
-  const { user, theme, setTheme } = useStore();
+  const { user, theme, setTheme, pillarProgress } = useStore();
 
-  // Mock progress data for the radar chart
-  const progressData = [65, 40, 85, 70, 55, 90, 60, 45, 80, 75];
+  const progressData = PILLARS.map(p => pillarProgress[p.id] || 0);
   const pillarLabels = PILLARS.map(p => p.name);
 
   return (
@@ -26,13 +25,13 @@ export default function ProfilePage() {
           <div className="w-24 h-24 rounded-full glass border-2 border-accent p-1">
             <div className="w-full h-full rounded-full bg-gradient-to-br from-accent to-accent-2" />
           </div>
-          <button className="absolute bottom-0 right-0 p-1 bg-accent rounded-full text-white">
+          <button className="absolute bottom-0 right-0 p-1 bg-accent rounded-full text-white shadow-lg">
             <Edit2 className="w-4 h-4" />
           </button>
         </div>
         <div>
           <h2 className="text-xl font-bold">{user.name}</h2>
-          <p className="text-xs text-text-secondary uppercase tracking-widest">Рівень {user.level} • Оптимізатор</p>
+          <p className="text-xs text-text-secondary uppercase tracking-widest font-bold">Рівень {user.level} • Оптимізатор</p>
         </div>
       </div>
 
@@ -50,11 +49,11 @@ export default function ProfilePage() {
                 key={t.id}
                 onClick={() => setTheme(t.id as any)}
                 className={`flex-1 flex items-center justify-center space-x-2 py-2 rounded-full transition-all ${
-                  theme === t.id ? 'bg-accent text-white font-semibold' : 'text-text-secondary'
+                  theme === t.id ? 'bg-accent text-white font-semibold shadow-md' : 'text-text-secondary hover:text-text-primary'
                 }`}
               >
                 <Icon className="w-4 h-4" />
-                <span className="text-xs">{t.label}</span>
+                <span className="text-[10px] font-bold uppercase">{t.label}</span>
               </button>
             );
           })}
@@ -63,7 +62,7 @@ export default function ProfilePage() {
 
       <section className="space-y-4">
         <h2 className="text-xl font-bold text-center">Карта сил</h2>
-        <GlassCard className="aspect-square w-full flex items-center justify-center overflow-hidden">
+        <GlassCard className="aspect-square w-full flex items-center justify-center overflow-hidden bg-accent/5">
           <RadarChart data={progressData} labels={pillarLabels} size={300} />
           <Award className="absolute w-10 h-10 text-accent opacity-20 pointer-events-none" />
         </GlassCard>
@@ -72,15 +71,15 @@ export default function ProfilePage() {
       <div className="grid grid-cols-2 gap-4">
         <GlassCard className="p-4 text-center">
           <p className="text-2xl font-bold">124</p>
-          <p className="text-xs text-text-secondary">СЕСІЙ</p>
+          <p className="text-[10px] text-text-secondary font-bold uppercase tracking-wider">СЕСІЙ</p>
         </GlassCard>
         <GlassCard className="p-4 text-center">
           <p className="text-2xl font-bold">48г</p>
-          <p className="text-xs text-text-secondary">ПРАКТИКИ</p>
+          <p className="text-[10px] text-text-secondary font-bold uppercase tracking-wider">ПРАКТИКИ</p>
         </GlassCard>
       </div>
 
-      <button className="w-full glass border border-stroke-glass text-text-primary rounded-full px-6 py-3 font-semibold transition-all flex items-center justify-center space-x-2">
+      <button className="w-full glass border border-stroke-glass text-text-primary rounded-full px-6 py-4 font-bold uppercase tracking-widest text-xs transition-all flex items-center justify-center space-x-2 active:scale-95">
         <Share2 className="w-4 h-4" />
         <span>Поділитись прогресом</span>
       </button>

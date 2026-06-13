@@ -31,6 +31,8 @@ interface AppState {
   theme: 'light' | 'dark' | 'system';
   rituals: Ritual[];
   habits: Habit[];
+  pillarProgress: Record<string, number>;
+  bookmarks: string[];
   setTheme: (theme: 'light' | 'dark' | 'system') => void;
   setUser: (user: Partial<UserState>) => void;
   completeOnboarding: () => void;
@@ -38,6 +40,8 @@ interface AppState {
   toggleRitual: (id: number) => void;
   addHabit: (name: string) => void;
   removeHabit: (id: string) => void;
+  updatePillarProgress: (pillarId: string, progress: number) => void;
+  toggleBookmark: (lessonId: string) => void;
 }
 
 export const useStore = create<AppState>()(
@@ -65,6 +69,19 @@ export const useStore = create<AppState>()(
         { id: '2', name: 'Читання 20 хв', streak: 5 },
         { id: '3', name: 'Планування дня', streak: 8 },
       ],
+      pillarProgress: {
+        seduction: 65,
+        intimacy: 40,
+        body: 85,
+        mind: 70,
+        health: 55,
+        discipline: 90,
+        habits: 60,
+        challenges: 45,
+        style: 80,
+        charisma: 75,
+      },
+      bookmarks: [],
       setTheme: (theme) => set({ theme }),
       setUser: (userUpdate) => set((state) => ({ user: { ...state.user, ...userUpdate } })),
       completeOnboarding: () => set({ isOnboarded: true }),
@@ -77,6 +94,14 @@ export const useStore = create<AppState>()(
       })),
       removeHabit: (id) => set((state) => ({
         habits: state.habits.filter(h => h.id !== id)
+      })),
+      updatePillarProgress: (pillarId, progress) => set((state) => ({
+        pillarProgress: { ...state.pillarProgress, [pillarId]: progress }
+      })),
+      toggleBookmark: (lessonId) => set((state) => ({
+        bookmarks: state.bookmarks.includes(lessonId)
+          ? state.bookmarks.filter(id => id !== lessonId)
+          : [...state.bookmarks, lessonId]
       })),
     }),
     {

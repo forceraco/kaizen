@@ -11,6 +11,13 @@
   --radius-md: 20px;
   --radius-lg: 28px;
   --radius-xl: 36px;
+
+  --animate-pulse-soft: pulse-soft 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+
+  @keyframes pulse-soft {
+    0%, 100% { opacity: 1; }
+    50% { opacity: .7; }
+  }
 }
 
 :root {
@@ -40,7 +47,8 @@
 body {
   background-color: var(--bg-0);
   color: var(--text-primary);
-  font-family: 'Inter', sans-serif;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
 }
 
 .glass {
@@ -55,4 +63,21 @@ body {
   background-color: var(--surface-glass-strong);
   border: 1px solid var(--stroke-glass);
   box-shadow: var(--shadow);
+}
+
+/* Custom utility for active states */
+.active-scale {
+  transition: transform 0.1s ease;
+}
+.active-scale:active {
+  transform: scale(0.97);
+}
+
+/* Scrollbar hide */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }

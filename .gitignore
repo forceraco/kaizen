@@ -10,3 +10,10 @@ data/*.db-journal
 .env.production.local
 *.log
 *.txt
+*.tsbuildinfo
+packages/core/*.js
+packages/core/*.d.ts
+packages/core/*.map
+packages/db/*.js
+packages/db/*.d.ts
+packages/db/*.map

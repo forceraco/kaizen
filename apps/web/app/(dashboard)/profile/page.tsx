@@ -1,9 +1,19 @@
+'use client';
+
 import React from 'react';
 import { GlassCard } from '@/components/ui/GlassCard';
-import { Settings, Edit2, Share2, Award } from 'lucide-react';
+import { Settings, Edit2, Share2, Award, Sun, Moon, Monitor } from 'lucide-react';
 import { PILLARS } from '@apex/core';
+import { useStore } from '@/store/useStore';
+import { RadarChart } from '@/components/ui/RadarChart';
 
 export default function ProfilePage() {
+  const { user, theme, setTheme } = useStore();
+
+  // Mock progress data for the radar chart
+  const progressData = [65, 40, 85, 70, 55, 90, 60, 45, 80, 75];
+  const pillarLabels = PILLARS.map(p => p.name);
+
   return (
     <div className="space-y-8 pb-20">
       <header className="flex justify-between items-center">
@@ -21,29 +31,41 @@ export default function ProfilePage() {
           </button>
         </div>
         <div>
-          <h2 className="text-xl font-bold">Георгій Марченко</h2>
-          <p className="text-xs text-text-secondary uppercase tracking-widest">Рівень 14 • Оптимізатор</p>
+          <h2 className="text-xl font-bold">{user.name}</h2>
+          <p className="text-xs text-text-secondary uppercase tracking-widest">Рівень {user.level} • Оптимізатор</p>
         </div>
       </div>
 
       <section className="space-y-4">
-        <h2 className="text-xl font-bold text-center">Карта сил</h2>
-        <GlassCard className="aspect-square w-full p-8 flex items-center justify-center">
-          <div className="relative w-full h-full border border-stroke-glass rounded-full flex items-center justify-center">
-            {PILLARS.map((p, i) => (
-              <div
-                key={p.id}
-                className="absolute text-[8px] font-bold text-text-tertiary"
-                style={{
-                  transform: `rotate(${i * (360 / PILLARS.length)}deg) translateY(-80px)`
-                }}
+        <h2 className="text-xl font-bold">Налаштування теми</h2>
+        <div className="flex space-x-2 glass p-1 rounded-full">
+          {[
+            { id: 'light', icon: Sun, label: 'Світла' },
+            { id: 'dark', icon: Moon, label: 'Темна' },
+            { id: 'system', icon: Monitor, label: 'Системна' },
+          ].map((t) => {
+            const Icon = t.icon;
+            return (
+              <button
+                key={t.id}
+                onClick={() => setTheme(t.id as any)}
+                className={`flex-1 flex items-center justify-center space-x-2 py-2 rounded-full transition-all ${
+                  theme === t.id ? 'bg-accent text-white font-semibold' : 'text-text-secondary'
+                }`}
               >
-                {p.name.split(' ')[0]}
-              </div>
-            ))}
-            <div className="w-1/2 h-1/2 bg-accent/30 rounded-full blur-xl" />
-            <Award className="w-12 h-12 text-accent" />
-          </div>
+                <Icon className="w-4 h-4" />
+                <span className="text-xs">{t.label}</span>
+              </button>
+            );
+          })}
+        </div>
+      </section>
+
+      <section className="space-y-4">
+        <h2 className="text-xl font-bold text-center">Карта сил</h2>
+        <GlassCard className="aspect-square w-full flex items-center justify-center overflow-hidden">
+          <RadarChart data={progressData} labels={pillarLabels} size={300} />
+          <Award className="absolute w-10 h-10 text-accent opacity-20 pointer-events-none" />
         </GlassCard>
       </section>
 

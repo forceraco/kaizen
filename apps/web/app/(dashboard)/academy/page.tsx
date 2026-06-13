@@ -1,9 +1,36 @@
-import React from 'react';
+'use client';
+
+import React, { useState } from 'react';
 import { GlassCard } from '@/components/ui/GlassCard';
 import { PILLARS } from '@apex/core';
-import { Search } from 'lucide-react';
+import { Search, Lock } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { useStore } from '@/store/useStore';
+import { AgeVerificationModal } from '@/components/AgeVerificationModal';
 
 export default function AcademyPage() {
+  const router = useRouter();
+  const { isAgeVerified } = useStore();
+  const [showAgeModal, setShowAgeModal] = useState(false);
+  const [pendingPillarId, setPendingPillarId] = useState<string | null>(null);
+
+  const handlePillarClick = (pillarId: string) => {
+    if (pillarId === 'intimacy' && !isAgeVerified) {
+      setPendingPillarId(pillarId);
+      setShowAgeModal(true);
+    } else {
+      router.push(`/academy/${pillarId}`);
+    }
+  };
+
+  const handleVerified = () => {
+    setShowAgeModal(false);
+    if (pendingPillarId) {
+      router.push(`/academy/${pendingPillarId}`);
+      setPendingPillarId(null);
+    }
+  };
+
   return (
     <div className="space-y-6 pb-20">
       <header className="space-y-4">
@@ -20,9 +47,13 @@ export default function AcademyPage() {
 
       <div className="grid grid-cols-1 gap-4">
         {PILLARS.map((pillar) => (
-          <GlassCard key={pillar.id} className="p-4 flex items-center space-x-4">
+          <GlassCard
+            key={pillar.id}
+            className="p-4 flex items-center space-x-4 cursor-pointer active:scale-98 transition-transform"
+            onClick={() => handlePillarClick(pillar.id)}
+          >
             <div className="w-12 h-12 glass rounded-2xl flex items-center justify-center text-accent">
-              <span className="text-xl font-bold">{pillar.name[0]}</span>
+              {pillar.id === 'intimacy' && !isAgeVerified ? <Lock className="w-6 h-6" /> : <span className="text-xl font-bold">{pillar.name[0]}</span>}
             </div>
             <div className="flex-1">
               <h3 className="font-bold">{pillar.name}</h3>
@@ -32,6 +63,10 @@ export default function AcademyPage() {
           </GlassCard>
         ))}
       </div>
+
+      {showAgeModal && (
+        <AgeVerificationModal onClose={() => setShowAgeModal(false)} />
+      )}
     </div>
   );
 }

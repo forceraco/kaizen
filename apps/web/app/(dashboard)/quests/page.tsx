@@ -1,23 +1,62 @@
-import React from 'react';
+'use client';
+
+import React, { useState } from 'react';
 import { GlassCard } from '@/components/ui/GlassCard';
-import { Trophy, Flame, Calendar, ChevronRight } from 'lucide-react';
+import { Button } from '@/components/ui/Button';
+import { Trophy, Flame, Calendar, ChevronRight, Plus, Trash2, X } from 'lucide-react';
+import { useStore } from '@/store/useStore';
 
 export default function QuestsPage() {
+  const { habits, addHabit, removeHabit } = useStore();
+  const [newHabitName, setNewHabitName] = useState('');
+  const [showAdd, setShowAdd] = useState(false);
+
   const challenges = [
     { id: 1, title: '30 днів без цукру', progress: 14, total: 30, color: 'text-accent' },
     { id: 2, title: 'Ранок о 6:00', progress: 5, total: 7, color: 'text-accent-2' },
   ];
 
+  const handleAddHabit = () => {
+    if (newHabitName.trim()) {
+      addHabit(newHabitName);
+      setNewHabitName('');
+      setShowAdd(false);
+    }
+  };
+
   return (
     <div className="space-y-8 pb-20">
-      <header>
+      <header className="flex justify-between items-center">
         <h1 className="text-2xl font-bold">Квести та Дисципліна</h1>
+        <button
+          onClick={() => setShowAdd(true)}
+          className="glass p-2 rounded-full text-accent"
+        >
+          <Plus className="w-6 h-6" />
+        </button>
       </header>
+
+      {showAdd && (
+        <GlassCard className="p-6 space-y-4" strong>
+          <div className="flex justify-between items-center">
+            <h3 className="font-bold">Нова звичка</h3>
+            <button onClick={() => setShowAdd(false)}><X className="w-5 h-5 text-text-tertiary" /></button>
+          </div>
+          <input
+            type="text"
+            value={newHabitName}
+            onChange={(e) => setNewHabitName(e.target.value)}
+            placeholder="Назва звички..."
+            className="w-full glass px-4 py-3 rounded-xl outline-none"
+          />
+          <Button onClick={handleAddHabit} className="w-full">Додати</Button>
+        </GlassCard>
+      )}
 
       <section className="space-y-4">
         <div className="flex justify-between items-center">
           <h2 className="text-xl font-bold">Активні челенджі</h2>
-          <span className="text-xs text-accent font-bold">КАТАЛОГ</span>
+          <span className="text-xs text-accent font-bold uppercase tracking-widest">Каталог</span>
         </div>
         <div className="space-y-4">
           {challenges.map(c => (
@@ -43,16 +82,22 @@ export default function QuestsPage() {
           <Calendar className="w-5 h-5 text-text-tertiary" />
         </div>
         <div className="space-y-3">
-          {['Холодний душ', 'Читання 20 хв', 'Планування дня'].map(habit => (
-            <GlassCard key={habit} className="p-4 flex items-center justify-between">
+          {habits.map(habit => (
+            <GlassCard key={habit.id} className="p-4 flex items-center justify-between group">
               <div className="flex items-center space-x-3">
                 <div className="w-10 h-10 glass rounded-full flex items-center justify-center">
                   <Flame className="w-5 h-5 text-warn" />
                 </div>
-                <span className="font-semibold">{habit}</span>
+                <span className="font-semibold">{habit.name}</span>
               </div>
-              <div className="flex items-center space-x-2">
-                <span className="text-sm font-bold">12 🔥</span>
+              <div className="flex items-center space-x-4">
+                <span className="text-sm font-bold">{habit.streak} 🔥</span>
+                <button
+                  onClick={() => removeHabit(habit.id)}
+                  className="text-danger opacity-0 group-hover:opacity-100 transition-opacity"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
                 <ChevronRight className="w-4 h-4 text-text-tertiary" />
               </div>
             </GlassCard>
